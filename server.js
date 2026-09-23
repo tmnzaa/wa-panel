@@ -11,7 +11,6 @@ const {
 } = require("@whiskeysockets/baileys");
 
 const pino = require("pino");
-
 const { handleMessage } = require("./bot");
 
 // ==================================================
@@ -41,7 +40,6 @@ const CONFIG_FILE =
 const SESSIONS_DIR =
     path.join(__dirname, "sessions");
 
-// Buat folder jika belum ada
 fs.mkdirSync(DATA_DIR, {
     recursive: true
 });
@@ -55,19 +53,12 @@ fs.mkdirSync(SESSIONS_DIR, {
 // ==================================================
 
 let sock = null;
-
 let status = "OFFLINE";
-
 let pairingCode = null;
-
 let lastError = null;
-
 let currentNumber = null;
-
 let connecting = false;
-
 let botActive = false;
-
 let manualStop = false;
 
 // ==================================================
@@ -75,11 +66,8 @@ let manualStop = false;
 // ==================================================
 
 function loadConfig() {
-
     try {
-
         if (!fs.existsSync(CONFIG_FILE)) {
-
             return {
                 phone: null
             };
@@ -94,7 +82,6 @@ function loadConfig() {
         return JSON.parse(data);
 
     } catch (error) {
-
         console.error(
             "❌ Gagal membaca config:",
             error.message
@@ -106,14 +93,10 @@ function loadConfig() {
     }
 }
 
-// ==================================================
-
 function saveConfig(phone) {
-
     try {
-
         const config = {
-            phone: phone
+            phone
         };
 
         fs.writeFileSync(
@@ -130,7 +113,6 @@ function saveConfig(phone) {
         );
 
     } catch (error) {
-
         console.error(
             "❌ Gagal menyimpan config:",
             error.message
@@ -142,12 +124,8 @@ function saveConfig(phone) {
 // CONNECT WHATSAPP
 // ==================================================
 
-async function connectWhatsApp(
-    phoneNumber
-) {
-
+async function connectWhatsApp(phoneNumber) {
     if (connecting) {
-
         console.log(
             "⚠️ Koneksi sedang diproses."
         );
@@ -156,21 +134,14 @@ async function connectWhatsApp(
     }
 
     connecting = true;
-
     manualStop = false;
 
     try {
-
-        // ------------------------------------------
-        // Bersihkan nomor
-        // ------------------------------------------
-
         const cleanNumber =
             String(phoneNumber)
                 .replace(/\D/g, "");
 
         if (!cleanNumber) {
-
             throw new Error(
                 "Nomor WhatsApp tidak valid."
             );
@@ -179,47 +150,36 @@ async function connectWhatsApp(
         currentNumber =
             cleanNumber;
 
-        // Simpan nomor
         saveConfig(
             cleanNumber
         );
 
         status = "CONNECTING";
-
         pairingCode = null;
-
         lastError = null;
-
         botActive = false;
 
         console.log("");
-
         console.log(
             "========================================"
         );
-
         console.log(
             "📱 NOMOR:",
             cleanNumber
         );
-
         console.log(
             "========================================"
         );
 
-        // ------------------------------------------
-        // Session path
-        // ------------------------------------------
+        // ==================================================
+        // SESSION
+        // ==================================================
 
         const sessionPath =
             path.join(
                 SESSIONS_DIR,
                 cleanNumber
             );
-
-        // ------------------------------------------
-        // Load session
-        // ------------------------------------------
 
         const {
             state,
@@ -229,9 +189,9 @@ async function connectWhatsApp(
                 sessionPath
             );
 
-        // ------------------------------------------
-        // WhatsApp Web version
-        // ------------------------------------------
+        // ==================================================
+        // WHATSAPP WEB VERSION
+        // ==================================================
 
         console.log(
             "🌐 Mengambil versi WhatsApp Web..."
@@ -247,12 +207,11 @@ async function connectWhatsApp(
             version
         );
 
-        // ------------------------------------------
-        // Socket
-        // ------------------------------------------
+        // ==================================================
+        // SOCKET
+        // ==================================================
 
         sock = makeWASocket({
-
             version,
 
             auth: state,
@@ -276,9 +235,9 @@ async function connectWhatsApp(
             keepAliveIntervalMs: 30000
         });
 
-        // ------------------------------------------
-        // Save credentials
-        // ------------------------------------------
+        // ==================================================
+        // SAVE CREDENTIALS
+        // ==================================================
 
         sock.ev.on(
             "creds.update",
@@ -292,11 +251,8 @@ async function connectWhatsApp(
         sock.ev.on(
             "messages.upsert",
             async ({ messages }) => {
-
                 for (const msg of messages) {
-
                     try {
-
                         await handleMessage(
                             sock,
                             msg,
@@ -304,7 +260,6 @@ async function connectWhatsApp(
                         );
 
                     } catch (error) {
-
                         console.error(
                             "❌ Bot error:",
                             error
@@ -321,7 +276,6 @@ async function connectWhatsApp(
         sock.ev.on(
             "connection.update",
             async (update) => {
-
                 const {
                     connection,
                     lastDisconnect
@@ -332,58 +286,46 @@ async function connectWhatsApp(
                     connection
                 );
 
-                // ------------------------------------------
+                // ==================================================
                 // ONLINE
-                // ------------------------------------------
+                // ==================================================
 
                 if (
                     connection === "open"
                 ) {
-
                     status = "ONLINE";
-
                     pairingCode = null;
-
                     lastError = null;
-
                     connecting = false;
-
                     botActive = true;
 
                     console.log("");
-
                     console.log(
                         "========================================"
                     );
-
                     console.log(
                         "✅ WHATSAPP ONLINE"
                     );
-
                     console.log(
                         "🤖 BOT AKTIF"
                     );
-
                     console.log(
                         "📱 Nomor:",
                         currentNumber
                     );
-
                     console.log(
                         "========================================"
                     );
-
                     console.log("");
                 }
 
-                // ------------------------------------------
+                // ==================================================
                 // CLOSED
-                // ------------------------------------------
+                // ==================================================
 
                 if (
                     connection === "close"
                 ) {
-
                     const error =
                         lastDisconnect?.error;
 
@@ -391,18 +333,15 @@ async function connectWhatsApp(
                         error?.output?.statusCode;
 
                     console.log("");
-
                     console.log(
                         "❌ WhatsApp terputus"
                     );
-
                     console.log(
                         "Status code:",
                         statusCode
                     );
 
                     if (error) {
-
                         console.log(
                             "Disconnect:",
                             error
@@ -410,42 +349,35 @@ async function connectWhatsApp(
                     }
 
                     sock = null;
-
                     pairingCode = null;
-
                     botActive = false;
 
-                    // --------------------------------------
-                    // Manual stop
-                    // --------------------------------------
+                    // ==================================================
+                    // MANUAL STOP
+                    // ==================================================
 
                     if (manualStop) {
-
                         console.log(
                             "🛑 Disconnect karena bot dihentikan."
                         );
 
                         status = "OFFLINE";
-
                         connecting = false;
 
                         return;
                     }
 
-                    // --------------------------------------
-                    // 515
-                    // --------------------------------------
+                    // ==================================================
+                    // STATUS 515
+                    // ==================================================
 
                     if (
                         statusCode === 515
                     ) {
-
                         console.log("");
-
                         console.log(
                             "⚠️ WhatsApp meminta restart socket."
                         );
-
                         console.log(
                             "🔄 Reconnect dalam 3 detik..."
                         );
@@ -457,19 +389,16 @@ async function connectWhatsApp(
 
                         setTimeout(
                             () => {
-
                                 connectWhatsApp(
                                     cleanNumber
                                 ).catch(
                                     error => {
-
                                         console.error(
                                             "❌ Reconnect error:",
                                             error.message
                                         );
                                     }
                                 );
-
                             },
                             3000
                         );
@@ -477,22 +406,20 @@ async function connectWhatsApp(
                         return;
                     }
 
-                    // --------------------------------------
-                    // Logged out
-                    // --------------------------------------
+                    // ==================================================
+                    // LOGGED OUT
+                    // ==================================================
 
                     if (
                         statusCode ===
                         DisconnectReason.loggedOut
                     ) {
-
                         status = "OFFLINE";
 
                         lastError =
                             "WhatsApp logout. Session perlu dipairing ulang.";
 
                         connecting = false;
-
                         botActive = false;
 
                         console.log(
@@ -506,25 +433,20 @@ async function connectWhatsApp(
                         return;
                     }
 
-                    // --------------------------------------
-                    // Disconnect lainnya
-                    // --------------------------------------
+                    // ==================================================
+                    // DISCONNECT LAINNYA
+                    // ==================================================
 
                     status = "OFFLINE";
-
                     connecting = false;
-
                     botActive = false;
 
-                    // Coba reconnect otomatis
                     setTimeout(
                         () => {
-
                             if (
                                 currentNumber &&
                                 !manualStop
                             ) {
-
                                 console.log(
                                     "🔄 Mencoba reconnect otomatis..."
                                 );
@@ -533,7 +455,6 @@ async function connectWhatsApp(
                                     currentNumber
                                 ).catch(
                                     error => {
-
                                         console.error(
                                             "❌ Reconnect error:",
                                             error.message
@@ -541,7 +462,6 @@ async function connectWhatsApp(
                                     }
                                 );
                             }
-
                         },
                         5000
                     );
@@ -551,15 +471,12 @@ async function connectWhatsApp(
 
         // ==================================================
         // PAIRING CODE
-        // HANYA JIKA BELUM REGISTERED
         // ==================================================
 
         if (
             !state.creds.registered
         ) {
-
             console.log("");
-
             console.log(
                 "⏳ Session belum terdaftar."
             );
@@ -577,7 +494,6 @@ async function connectWhatsApp(
             );
 
             if (!sock) {
-
                 connecting = false;
 
                 throw new Error(
@@ -597,26 +513,20 @@ async function connectWhatsApp(
             pairingCode = code;
 
             console.log("");
-
             console.log(
                 "========================================"
             );
-
             console.log(
                 "🔑 PAIRING CODE:",
                 code
             );
-
             console.log(
                 "========================================"
             );
-
             console.log("");
 
         } else {
-
             console.log("");
-
             console.log(
                 "♻️ Session ditemukan."
             );
@@ -626,38 +536,27 @@ async function connectWhatsApp(
             );
 
             console.log("");
-
         }
 
     } catch (error) {
-
         connecting = false;
-
         status = "ERROR";
-
         botActive = false;
-
         pairingCode = null;
-
         lastError =
             error.message;
 
         console.log("");
-
         console.log(
             "========================================"
         );
-
         console.log(
             "❌ ERROR CONNECT"
         );
-
         console.error(error);
-
         console.log(
             "========================================"
         );
-
         console.log("");
     }
 }
@@ -667,29 +566,22 @@ async function connectWhatsApp(
 // ==================================================
 
 function stopWhatsApp() {
-
     console.log("");
-
     console.log(
         "🛑 Menghentikan bot..."
     );
 
     manualStop = true;
-
     connecting = false;
-
     botActive = false;
 
     if (sock) {
-
         try {
-
             sock.end(
                 undefined
             );
 
         } catch (error) {
-
             console.log(
                 "Gagal menutup socket:",
                 error.message
@@ -698,9 +590,7 @@ function stopWhatsApp() {
     }
 
     sock = null;
-
     status = "OFFLINE";
-
     pairingCode = null;
 
     console.log(
@@ -719,17 +609,11 @@ function stopWhatsApp() {
 app.get(
     "/api/status",
     (req, res) => {
-
         res.json({
-
             status,
-
             pairingCode,
-
             error: lastError,
-
             phone: currentNumber,
-
             botActive
         });
     }
@@ -742,19 +626,14 @@ app.get(
 app.post(
     "/api/connect",
     async (req, res) => {
-
         try {
-
             const {
                 phone
             } = req.body;
 
             if (!phone) {
-
                 return res.status(400).json({
-
                     success: false,
-
                     error:
                         "Nomor WhatsApp belum diisi."
                 });
@@ -764,11 +643,8 @@ app.post(
                 status === "ONLINE" ||
                 status === "CONNECTING"
             ) {
-
                 return res.json({
-
                     success: true,
-
                     message:
                         "WhatsApp sedang diproses."
                 });
@@ -779,19 +655,14 @@ app.post(
             );
 
             res.json({
-
                 success: true,
-
                 message:
                     "Proses koneksi dimulai."
             });
 
         } catch (error) {
-
             res.status(500).json({
-
                 success: false,
-
                 error:
                     error.message
             });
@@ -806,13 +677,10 @@ app.post(
 app.post(
     "/api/stop",
     (req, res) => {
-
         stopWhatsApp();
 
         res.json({
-
             success: true,
-
             message:
                 "Bot dihentikan."
         });
@@ -824,16 +692,11 @@ app.post(
 // ==================================================
 
 async function autoStart() {
-
     const config =
         loadConfig();
 
-    if (
-        !config.phone
-    ) {
-
+    if (!config.phone) {
         console.log("");
-
         console.log(
             "ℹ️ Belum ada nomor tersimpan."
         );
@@ -851,7 +714,6 @@ async function autoStart() {
         config.phone;
 
     console.log("");
-
     console.log(
         "========================================"
     );
@@ -884,12 +746,17 @@ async function autoStart() {
 // START SERVER
 // ==================================================
 
+const PORT =
+    process.env.PORT || 3000;
+
+const HOST =
+    "0.0.0.0";
+
 app.listen(
-    3000,
+    PORT,
+    HOST,
     () => {
-
         console.log("");
-
         console.log(
             "========================================"
         );
@@ -903,11 +770,11 @@ app.listen(
         );
 
         console.log(
-            "🌐 Panel:"
+            `🌐 Port: ${PORT}`
         );
 
         console.log(
-            "http://localhost:3000"
+            `🌐 Host: ${HOST}`
         );
 
         console.log(
@@ -916,7 +783,6 @@ app.listen(
 
         console.log("");
 
-        // Jalankan auto reconnect
         autoStart();
     }
 );
