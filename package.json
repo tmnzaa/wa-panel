@@ -1,0 +1,22 @@
+{
+  "name": "wa-panel",
+  "version": "1.0.0",
+  "description": "WhatsApp Guard Bot Panel",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "whatsapp",
+    "baileys",
+    "bot",
+    "guard"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@whiskeysockets/baileys": "^7.0.0-rc14",
+    "express": "^5.2.1",
+    "pino": "^10.3.1"
+  }
+}

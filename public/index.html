@@ -1,0 +1,1982 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>WA Guard Panel</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family:
+                Inter,
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at top left,
+                    #18233d 0%,
+                    #0b1020 38%,
+                    #070b14 100%
+                );
+
+            color: #f8fafc;
+
+            padding: 30px;
+        }
+
+
+        /* =========================================
+           CONTAINER
+        ========================================= */
+
+        .container {
+            max-width: 1150px;
+            margin: auto;
+        }
+
+
+        /* =========================================
+           HEADER
+        ========================================= */
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 28px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo {
+            width: 52px;
+            height: 52px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 15px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #22c55e,
+                    #16a34a
+                );
+
+            box-shadow:
+                0 10px 35px
+                rgba(34, 197, 94, .25);
+
+            font-size: 25px;
+        }
+
+        .brand h1 {
+            font-size: 22px;
+            font-weight: 750;
+            letter-spacing: -.4px;
+        }
+
+        .brand p {
+            margin-top: 4px;
+
+            color: #94a3b8;
+
+            font-size: 13px;
+        }
+
+
+        /* =========================================
+           STATUS BADGE
+        ========================================= */
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            padding: 10px 15px;
+
+            border: 1px solid
+                rgba(255,255,255,.08);
+
+            border-radius: 999px;
+
+            background:
+                rgba(255,255,255,.045);
+
+            backdrop-filter: blur(15px);
+
+            font-size: 13px;
+            font-weight: 650;
+        }
+
+        .status-dot {
+            width: 9px;
+            height: 9px;
+
+            border-radius: 50%;
+
+            background: #64748b;
+
+            box-shadow: 0 0 0 4px
+                rgba(100,116,139,.1);
+        }
+
+        .status-badge.online .status-dot {
+            background: #22c55e;
+
+            box-shadow:
+                0 0 0 4px
+                rgba(34,197,94,.12),
+                0 0 15px
+                rgba(34,197,94,.8);
+        }
+
+        .status-badge.connecting .status-dot {
+            background: #f59e0b;
+
+            animation: pulse 1.2s infinite;
+        }
+
+        .status-badge.error .status-dot {
+            background: #ef4444;
+        }
+
+        @keyframes pulse {
+
+            0%, 100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: .35;
+            }
+
+        }
+
+
+        /* =========================================
+           GRID
+        ========================================= */
+
+        .grid {
+            display: grid;
+
+            grid-template-columns:
+                1.25fr
+                .75fr;
+
+            gap: 20px;
+        }
+
+
+        /* =========================================
+           CARD
+        ========================================= */
+
+        .card {
+            background:
+                rgba(15,23,42,.72);
+
+            border:
+                1px solid
+                rgba(255,255,255,.07);
+
+            border-radius: 22px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 25px 70px
+                rgba(0,0,0,.25);
+
+            backdrop-filter:
+                blur(18px);
+        }
+
+        .card + .card {
+            margin-top: 20px;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 22px;
+        }
+
+        .card-title h2 {
+            font-size: 16px;
+        }
+
+        .card-title span {
+            color: #64748b;
+            font-size: 12px;
+        }
+
+
+        /* =========================================
+           CONNECTION CARD
+        ========================================= */
+
+        .hero {
+            padding: 30px;
+        }
+
+        .hero h2 {
+            font-size: 25px;
+
+            margin-bottom: 8px;
+
+            letter-spacing: -.6px;
+        }
+
+        .hero-description {
+            color: #94a3b8;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
+            margin-bottom: 27px;
+        }
+
+
+        /* =========================================
+           INPUT
+        ========================================= */
+
+        .input-label {
+            display: block;
+
+            margin-bottom: 9px;
+
+            color: #cbd5e1;
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-prefix {
+            position: absolute;
+
+            left: 15px;
+            top: 50%;
+
+            transform:
+                translateY(-50%);
+
+            color: #64748b;
+
+            font-size: 14px;
+
+            pointer-events: none;
+        }
+
+        input {
+            width: 100%;
+
+            height: 52px;
+
+            padding:
+                0 16px 0 43px;
+
+            border:
+                1px solid
+                #26334d;
+
+            border-radius: 13px;
+
+            outline: none;
+
+            background:
+                #0b1220;
+
+            color: #f8fafc;
+
+            font-size: 15px;
+
+            transition:
+                .2s ease;
+        }
+
+        input::placeholder {
+            color: #475569;
+        }
+
+        input:focus {
+            border-color:
+                #22c55e;
+
+            box-shadow:
+                0 0 0 4px
+                rgba(34,197,94,.08);
+        }
+
+
+        /* =========================================
+           BUTTONS
+        ========================================= */
+
+        .buttons {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 12px;
+
+            margin-top: 15px;
+        }
+
+        button {
+            height: 50px;
+
+            border: none;
+
+            border-radius: 13px;
+
+            cursor: pointer;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            transition:
+                transform .15s ease,
+                opacity .15s ease,
+                box-shadow .15s ease;
+        }
+
+        button:hover {
+            transform:
+                translateY(-1px);
+        }
+
+        button:active {
+            transform:
+                translateY(0);
+        }
+
+        .btn-connect {
+            background:
+                linear-gradient(
+                    135deg,
+                    #22c55e,
+                    #16a34a
+                );
+
+            color: white;
+
+            box-shadow:
+                0 10px 25px
+                rgba(34,197,94,.18);
+        }
+
+        .btn-stop {
+            background:
+                #1e293b;
+
+            color: #f8fafc;
+
+            border:
+                1px solid
+                #334155;
+        }
+
+        .btn-stop:hover {
+            background:
+                #263449;
+        }
+
+        button:disabled {
+            opacity: .45;
+
+            cursor: not-allowed;
+
+            transform: none;
+        }
+
+
+        /* =========================================
+           PAIRING CODE
+        ========================================= */
+
+        .pairing-box {
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            min-height: 145px;
+
+            border:
+                1px dashed
+                #334155;
+
+            border-radius: 17px;
+
+            background:
+                rgba(2,6,23,.4);
+
+            text-align: center;
+        }
+
+        .pairing-empty {
+            color: #64748b;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+        }
+
+        .pairing-content {
+            width: 100%;
+        }
+
+        .pairing-label {
+            color: #94a3b8;
+
+            font-size: 12px;
+
+            margin-bottom: 9px;
+        }
+
+        .pairing-code {
+            font-family:
+                "Courier New",
+                monospace;
+
+            font-size: 29px;
+
+            letter-spacing: 6px;
+
+            font-weight: 800;
+
+            color: #22c55e;
+
+            text-shadow:
+                0 0 20px
+                rgba(34,197,94,.2);
+        }
+
+        .pairing-help {
+            margin-top: 11px;
+
+            color: #64748b;
+
+            font-size: 11px;
+        }
+
+
+        /* =========================================
+           STATS
+        ========================================= */
+
+        .stats {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 12px;
+        }
+
+        .stat {
+            padding: 17px;
+
+            border-radius: 15px;
+
+            background:
+                rgba(255,255,255,.035);
+
+            border:
+                1px solid
+                rgba(255,255,255,.05);
+        }
+
+        .stat-label {
+            color: #64748b;
+
+            font-size: 11px;
+
+            margin-bottom: 7px;
+        }
+
+        .stat-value {
+            font-size: 14px;
+
+            font-weight: 700;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+        }
+
+
+        /* =========================================
+           BOT STATUS
+        ========================================= */
+
+        .bot-status {
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+
+            padding: 18px;
+
+            border-radius: 16px;
+
+            background:
+                rgba(255,255,255,.035);
+
+            border:
+                1px solid
+                rgba(255,255,255,.05);
+        }
+
+        .bot-icon {
+            width: 45px;
+            height: 45px;
+
+            flex-shrink: 0;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 13px;
+
+            background:
+                #172033;
+
+            font-size: 21px;
+        }
+
+        .bot-info {
+            min-width: 0;
+        }
+
+        .bot-name {
+            font-size: 14px;
+
+            font-weight: 700;
+        }
+
+        .bot-state {
+            margin-top: 4px;
+
+            font-size: 12px;
+
+            color: #64748b;
+        }
+
+
+        /* =========================================
+           INFO
+        ========================================= */
+
+        .info-list {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 12px;
+        }
+
+        .info-item {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding-bottom: 12px;
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,.05);
+        }
+
+        .info-item:last-child {
+            padding-bottom: 0;
+
+            border-bottom: none;
+        }
+
+        .info-item span:first-child {
+            color: #64748b;
+
+            font-size: 12px;
+        }
+
+        .info-item span:last-child {
+            color: #cbd5e1;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            text-align: right;
+        }
+
+
+        /* =========================================
+           ERROR
+        ========================================= */
+
+        .error-box {
+            display: none;
+
+            margin-top: 15px;
+
+            padding: 13px 15px;
+
+            border-radius: 12px;
+
+            background:
+                rgba(239,68,68,.08);
+
+            border:
+                1px solid
+                rgba(239,68,68,.2);
+
+            color: #fca5a5;
+
+            font-size: 12px;
+
+            line-height: 1.5;
+        }
+
+        .error-box.show {
+            display: block;
+        }
+
+
+        /* =========================================
+           FOOTER
+        ========================================= */
+
+        footer {
+            margin-top: 25px;
+
+            text-align: center;
+
+            color: #475569;
+
+            font-size: 11px;
+        }
+
+
+        /* =========================================
+           TOAST
+        ========================================= */
+
+        .toast {
+            position: fixed;
+
+            right: 25px;
+            bottom: 25px;
+
+            padding: 13px 17px;
+
+            border-radius: 12px;
+
+            background:
+                #172033;
+
+            border:
+                1px solid
+                #26334d;
+
+            color: #e2e8f0;
+
+            font-size: 12px;
+
+            box-shadow:
+                0 15px 40px
+                rgba(0,0,0,.35);
+
+            opacity: 0;
+
+            transform:
+                translateY(10px);
+
+            pointer-events: none;
+
+            transition: .25s ease;
+
+            z-index: 100;
+        }
+
+        .toast.show {
+            opacity: 1;
+
+            transform:
+                translateY(0);
+        }
+
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 850px) {
+
+            body {
+                padding: 18px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                align-items: flex-start;
+
+                gap: 15px;
+            }
+
+            .status-badge {
+                font-size: 11px;
+            }
+
+        }
+
+
+        @media (max-width: 500px) {
+
+            .brand h1 {
+                font-size: 18px;
+            }
+
+            .brand p {
+                font-size: 11px;
+            }
+
+            .logo {
+                width: 45px;
+                height: 45px;
+            }
+
+            .hero {
+                padding: 21px;
+            }
+
+            .buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .pairing-code {
+                font-size: 22px;
+
+                letter-spacing: 4px;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+    <!-- =========================================
+         HEADER
+    ========================================== -->
+
+    <header class="header">
+
+        <div class="brand">
+
+            <div class="logo">
+                🤖
+            </div>
+
+            <div>
+
+                <h1>
+                    WA Guard Panel
+                </h1>
+
+                <p>
+                    WhatsApp Bot Control Center
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="statusBadge"
+            class="status-badge"
+        >
+
+            <div
+                id="statusDot"
+                class="status-dot"
+            ></div>
+
+            <span id="statusText">
+                OFFLINE
+            </span>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =========================================
+         MAIN GRID
+    ========================================== -->
+
+    <main class="grid">
+
+
+        <!-- =====================================
+             LEFT
+        ====================================== -->
+
+        <section>
+
+
+            <!-- CONNECTION -->
+
+            <div class="card hero">
+
+                <h2>
+                    Connect WhatsApp
+                </h2>
+
+                <p class="hero-description">
+                    Hubungkan nomor WhatsApp kamu
+                    menggunakan pairing code.
+                    Setelah berhasil terhubung,
+                    bot akan otomatis aktif.
+                </p>
+
+
+                <label class="input-label">
+                    Nomor WhatsApp
+                </label>
+
+                <div class="input-wrapper">
+
+                    <span class="input-prefix">
+                        📱
+                    </span>
+
+                    <input
+                    type="text"
+                    id="phone"
+                    placeholder="628xxxxxxxxxx"
+                    autocomplete="off"
+                >
+
+                </div>
+
+
+                <div class="buttons">
+
+                    <button
+                        id="connectBtn"
+                        class="btn-connect"
+                        onclick="connectBot()"
+                    >
+                        ▶ CONNECT BOT
+                    </button>
+
+                    <button
+                        id="stopBtn"
+                        class="btn-stop"
+                        onclick="stopBot()"
+                    >
+                        ■ STOP BOT
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="errorBox"
+                    class="error-box"
+                ></div>
+
+            </div>
+
+
+
+            <!-- PAIRING -->
+
+            <div class="card">
+
+                <div class="card-title">
+
+                    <h2>
+                        🔑 Pairing Code
+                    </h2>
+
+                    <span>
+                        WhatsApp Login
+                    </span>
+
+                </div>
+
+
+                <div class="pairing-box">
+
+                    <div
+                        id="pairingEmpty"
+                        class="pairing-empty"
+                    >
+
+                        Pairing code akan muncul
+                        di sini setelah proses koneksi
+                        dimulai.
+
+                    </div>
+
+
+                    <div
+                        id="pairingContent"
+                        class="pairing-content"
+                        style="display:none;"
+                    >
+
+                        <div class="pairing-label">
+                            MASUKKAN KODE INI DI WHATSAPP
+                        </div>
+
+                        <div
+                            id="pairingCode"
+                            class="pairing-code"
+                        >
+                            --------
+                        </div>
+
+                        <div class="pairing-help">
+                            WhatsApp → Perangkat tertaut
+                            → Tautkan dengan nomor telepon
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =====================================
+             RIGHT
+        ====================================== -->
+
+        <aside>
+
+
+            <!-- BOT STATUS -->
+
+            <div class="card">
+
+                <div class="card-title">
+
+                    <h2>
+                        🤖 Bot Status
+                    </h2>
+
+                    <span>
+                        Live
+                    </span>
+
+                </div>
+
+
+                <div class="bot-status">
+
+                    <div class="bot-icon">
+                        🤖
+                    </div>
+
+                    <div class="bot-info">
+
+                        <div class="bot-name">
+                            WA Guard Bot
+                        </div>
+
+                        <div
+                            id="botState"
+                            class="bot-state"
+                        >
+                            Bot belum aktif
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- CONNECTION INFO -->
+
+            <div class="card">
+
+                <div class="card-title">
+
+                    <h2>
+                        📊 Connection
+                    </h2>
+
+                </div>
+
+
+                <div class="stats">
+
+                    <div class="stat">
+
+                        <div class="stat-label">
+                            STATUS
+                        </div>
+
+                        <div
+                            id="statStatus"
+                            class="stat-value"
+                        >
+                            OFFLINE
+                        </div>
+
+                    </div>
+
+
+                    <div class="stat">
+
+                        <div class="stat-label">
+                            BOT
+                        </div>
+
+                        <div
+                            id="statBot"
+                            class="stat-value"
+                        >
+                            INACTIVE
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <br>
+
+
+                <div class="info-list">
+
+                    <div class="info-item">
+
+                        <span>
+                            WhatsApp Number
+                        </span>
+
+                        <span id="statPhone">
+                            -
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span>
+                            Connection
+                        </span>
+
+                        <span id="statConnection">
+                            Offline
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span>
+                            Pairing
+                        </span>
+
+                        <span id="statPairing">
+                            Not requested
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- COMMANDS -->
+
+            <div class="card">
+
+                <div class="card-title">
+
+                    <h2>
+                        ⚡ Bot Commands
+                    </h2>
+
+                </div>
+
+
+                <div class="info-list">
+
+                    <div class="info-item">
+
+                        <span>
+                            Ping
+                        </span>
+
+                        <span>
+                            !ping
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span>
+                            Status
+                        </span>
+
+                        <span>
+                            !status
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span>
+                            Menu
+                        </span>
+
+                        <span>
+                            !menu
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </aside>
+
+    </main>
+
+
+    <footer>
+        WA Guard Panel • WhatsApp Bot Management
+    </footer>
+
+</div>
+
+
+<!-- =========================================
+     TOAST
+========================================== -->
+
+<div
+    id="toast"
+    class="toast"
+>
+    -
+</div>
+
+
+
+<script>
+
+    // =========================================
+    // GLOBAL
+    // =========================================
+
+    let lastStatus = "";
+
+    // =========================================
+    // ELEMENTS
+    // =========================================
+
+    const phoneInput =
+        document.getElementById("phone");
+
+    const connectBtn =
+        document.getElementById("connectBtn");
+
+    const stopBtn =
+        document.getElementById("stopBtn");
+
+    const statusBadge =
+        document.getElementById("statusBadge");
+
+    const statusText =
+        document.getElementById("statusText");
+
+    const statusDot =
+        document.getElementById("statusDot");
+
+    const pairingEmpty =
+        document.getElementById("pairingEmpty");
+
+    const pairingContent =
+        document.getElementById("pairingContent");
+
+    const pairingCode =
+        document.getElementById("pairingCode");
+
+    const errorBox =
+        document.getElementById("errorBox");
+
+    const botState =
+        document.getElementById("botState");
+
+    const statStatus =
+        document.getElementById("statStatus");
+
+    const statBot =
+        document.getElementById("statBot");
+
+    const statPhone =
+        document.getElementById("statPhone");
+
+    const statConnection =
+        document.getElementById("statConnection");
+
+    const statPairing =
+        document.getElementById("statPairing");
+
+
+    // =========================================
+    // LOCAL STORAGE
+    // =========================================
+
+    function loadSavedPhone() {
+
+        try {
+
+            const savedPhone =
+                localStorage.getItem("wa_phone");
+
+            if (
+                savedPhone &&
+                phoneInput
+            ) {
+
+                phoneInput.value =
+                    savedPhone;
+            }
+
+        } catch (error) {
+
+            console.log(
+                "LocalStorage error:",
+                error
+            );
+        }
+    }
+
+
+    // =========================================
+    // SAVE PHONE
+    // =========================================
+
+    function savePhone(phone) {
+
+        try {
+
+            localStorage.setItem(
+                "wa_phone",
+                phone
+            );
+
+        } catch (error) {
+
+            console.log(
+                "Gagal menyimpan nomor:",
+                error
+            );
+        }
+    }
+
+
+    // =========================================
+    // TOAST
+    // =========================================
+
+    function showToast(message) {
+
+        const toast =
+            document.getElementById("toast");
+
+        if (!toast) {
+            return;
+        }
+
+        toast.textContent =
+            message;
+
+        toast.classList.add("show");
+
+        setTimeout(() => {
+
+            toast.classList.remove(
+                "show"
+            );
+
+        }, 2500);
+    }
+
+
+    // =========================================
+    // CONNECT
+    // =========================================
+
+    async function connectBot() {
+
+        const phone =
+            phoneInput.value.trim();
+
+
+        // -----------------------------------------
+        // Validasi nomor
+        // -----------------------------------------
+
+        if (!phone) {
+
+            showToast(
+                "Masukkan nomor WhatsApp dulu."
+            );
+
+            phoneInput.focus();
+
+            return;
+        }
+
+
+        // -----------------------------------------
+        // Simpan nomor ke browser
+        // -----------------------------------------
+
+        savePhone(phone);
+
+
+        // -----------------------------------------
+        // UI loading
+        // -----------------------------------------
+
+        connectBtn.disabled = true;
+
+        connectBtn.textContent =
+            "⏳ CONNECTING...";
+
+        errorBox.classList.remove(
+            "show"
+        );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/connect",
+                    {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                phone
+                            })
+
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!data.success) {
+
+                throw new Error(
+                    data.error ||
+                    "Gagal menghubungkan."
+                );
+            }
+
+
+            showToast(
+                "🔄 Proses koneksi dimulai."
+            );
+
+
+            // Langsung cek status
+            loadStatus();
+
+
+        } catch (error) {
+
+            errorBox.textContent =
+                error.message;
+
+            errorBox.classList.add(
+                "show"
+            );
+
+            showToast(
+                "❌ Koneksi gagal."
+            );
+
+        }
+
+
+        // Tombol akan diatur kembali
+        // oleh updateUI()
+
+        setTimeout(() => {
+
+            loadStatus();
+
+        }, 1000);
+
+    }
+
+
+    // =========================================
+    // STOP
+    // =========================================
+
+    async function stopBot() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/stop",
+                    {
+                        method: "POST"
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                data.success
+            ) {
+
+                showToast(
+                    "🛑 Bot berhasil dihentikan."
+                );
+
+                loadStatus();
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                error
+            );
+
+            showToast(
+                "❌ Gagal menghentikan bot."
+            );
+
+        }
+
+    }
+
+
+    // =========================================
+    // UPDATE UI
+    // =========================================
+
+    function updateUI(data) {
+
+        const status =
+            data.status ||
+            "OFFLINE";
+
+
+        // =====================================
+        // NOMOR
+        // =====================================
+
+        // Server adalah sumber utama nomor.
+        // Kalau server punya nomor, simpan juga
+        // ke localStorage.
+
+        if (
+            data.phone
+        ) {
+
+            phoneInput.value =
+                data.phone;
+
+            savePhone(
+                data.phone
+            );
+
+        }
+
+
+        // =====================================
+        // STATUS BADGE
+        // =====================================
+
+        statusText.textContent =
+            status;
+
+        statusBadge.className =
+            "status-badge";
+
+
+        if (
+            status === "ONLINE"
+        ) {
+
+            statusBadge.classList.add(
+                "online"
+            );
+
+        }
+
+        else if (
+            status === "CONNECTING"
+        ) {
+
+            statusBadge.classList.add(
+                "connecting"
+            );
+
+        }
+
+        else if (
+            status === "ERROR"
+        ) {
+
+            statusBadge.classList.add(
+                "error"
+            );
+
+        }
+
+
+        // =====================================
+        // STATUS DOT
+        // =====================================
+
+        if (statusDot) {
+
+            statusDot.className =
+                "status-dot";
+
+            if (
+                status === "ONLINE"
+            ) {
+
+                statusDot.classList.add(
+                    "online"
+                );
+
+            }
+
+            else if (
+                status === "CONNECTING"
+            ) {
+
+                statusDot.classList.add(
+                    "connecting"
+                );
+
+            }
+
+        }
+
+
+        // =====================================
+        // STATS
+        // =====================================
+
+        statStatus.textContent =
+            status;
+
+
+        statPhone.textContent =
+            data.phone ||
+            phoneInput.value ||
+            "-";
+
+
+        statConnection.textContent =
+            status === "ONLINE"
+                ? "Connected"
+                : status === "CONNECTING"
+                    ? "Connecting..."
+                    : "Offline";
+
+
+        // =====================================
+        // BOT STATUS
+        // =====================================
+
+        const active =
+            data.botActive === true;
+
+
+        if (active) {
+
+            statBot.textContent =
+                "ACTIVE";
+
+            botState.textContent =
+                "Bot sedang aktif dan siap menerima pesan.";
+
+        }
+
+        else {
+
+            statBot.textContent =
+                "INACTIVE";
+
+            botState.textContent =
+                "Bot belum aktif.";
+
+        }
+
+
+        // =====================================
+        // PAIRING CODE
+        // =====================================
+
+        if (
+            data.pairingCode
+        ) {
+
+            pairingEmpty.style.display =
+                "none";
+
+            pairingContent.style.display =
+                "block";
+
+            pairingCode.textContent =
+                data.pairingCode;
+
+            statPairing.textContent =
+                "Code tersedia";
+
+        }
+
+        else {
+
+            pairingEmpty.style.display =
+                "block";
+
+            pairingContent.style.display =
+                "none";
+
+            statPairing.textContent =
+                "Not requested";
+
+        }
+
+
+        // =====================================
+        // ERROR
+        // =====================================
+
+        if (
+            data.error
+        ) {
+
+            errorBox.textContent =
+                data.error;
+
+            errorBox.classList.add(
+                "show"
+            );
+
+        }
+
+        else {
+
+            errorBox.classList.remove(
+                "show"
+            );
+
+        }
+
+
+        // =====================================
+        // CONNECT BUTTON
+        // =====================================
+
+        if (
+            status === "ONLINE"
+        ) {
+
+            connectBtn.disabled =
+                true;
+
+            connectBtn.textContent =
+                "✓ BOT ONLINE";
+
+        }
+
+        else if (
+            status === "CONNECTING"
+        ) {
+
+            connectBtn.disabled =
+                true;
+
+            connectBtn.textContent =
+                "⏳ CONNECTING...";
+
+        }
+
+        else {
+
+            connectBtn.disabled =
+                false;
+
+            connectBtn.textContent =
+                "▶ CONNECT BOT";
+
+        }
+
+
+        // =====================================
+        // STOP BUTTON
+        // =====================================
+
+        if (stopBtn) {
+
+            if (
+                status === "ONLINE" ||
+                status === "CONNECTING"
+            ) {
+
+                stopBtn.disabled =
+                    false;
+
+            }
+
+            else {
+
+                stopBtn.disabled =
+                    true;
+
+            }
+
+        }
+
+
+        // =====================================
+        // NOTIFICATION
+        // =====================================
+
+        if (
+            lastStatus &&
+            lastStatus !== status
+        ) {
+
+            if (
+                status === "ONLINE"
+            ) {
+
+                showToast(
+                    "🟢 WhatsApp berhasil online!"
+                );
+
+            }
+
+            else if (
+                status === "OFFLINE"
+            ) {
+
+                showToast(
+                    "🔴 WhatsApp offline."
+                );
+
+            }
+
+            else if (
+                status === "ERROR"
+            ) {
+
+                showToast(
+                    "❌ Terjadi error."
+                );
+
+            }
+
+        }
+
+
+        lastStatus =
+            status;
+
+    }
+
+
+    // =========================================
+    // GET STATUS
+    // =========================================
+
+    async function loadStatus() {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/status",
+                    {
+                        cache: "no-store"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                return;
+            }
+
+
+            const data =
+                await response.json();
+
+
+            updateUI(
+                data
+            );
+
+        }
+
+        catch (error) {
+
+            console.log(
+                "Status error:",
+                error
+            );
+
+        }
+
+    }
+
+
+    // =========================================
+    // INITIALIZE
+    // =========================================
+
+    function initialize() {
+
+        // Ambil nomor yang tersimpan
+        loadSavedPhone();
+
+        // Ambil status server
+        loadStatus();
+
+    }
+
+
+    // =========================================
+    // AUTO REFRESH
+    // =========================================
+
+    initialize();
+
+
+    setInterval(
+        loadStatus,
+        1000
+    );
+
+
+    // =========================================
+    // ENTER KEY
+    // =========================================
+
+    phoneInput.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                connectBot();
+
+            }
+
+        }
+    );
+
+</script>
